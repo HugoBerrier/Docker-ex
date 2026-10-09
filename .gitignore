@@ -1,0 +1,5 @@
+# Archives d'images Docker (trop volumineuses pour GitHub)
+*.tar
+
+# Build Java
+**/target/

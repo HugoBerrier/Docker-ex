@@ -1,0 +1,33 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: exercice05-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: exercice05
+      MYSQL_USER: exo05
+      MYSQL_PASSWORD: exo05pass
+    volumes:
+      - exercice05-mysql-data:/var/lib/mysql
+    networks:
+      - exercice05-net
+    # Pas de ports : MySQL n'est pas exposé sur l'hôte
+
+  adminer:
+    image: adminer
+    container_name: exercice05-adminer
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    networks:
+      - exercice05-net
+    depends_on:
+      - mysql
+
+volumes:
+  exercice05-mysql-data:
+
+networks:
+  exercice05-net:
+    name: exercice05-net

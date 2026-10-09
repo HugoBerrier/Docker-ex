@@ -1,0 +1,17 @@
+=== Ping A → B ===
+PING exercice04-ping-b (172.18.0.3) 56(84) bytes of data.
+64 bytes from exercice04-ping-b.exercice04-net (172.18.0.3): icmp_seq=1 ttl=64 time=0.264 ms
+64 bytes from exercice04-ping-b.exercice04-net (172.18.0.3): icmp_seq=2 ttl=64 time=0.076 ms
+64 bytes from exercice04-ping-b.exercice04-net (172.18.0.3): icmp_seq=3 ttl=64 time=0.074 ms
+
+--- exercice04-ping-b ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss
+
+=== Ping B → A ===
+PING exercice04-ping-a (172.18.0.2) 56(84) bytes of data.
+64 bytes from exercice04-ping-a.exercice04-net (172.18.0.2): icmp_seq=1 ttl=64 time=0.067 ms
+64 bytes from exercice04-ping-a.exercice04-net (172.18.0.2): icmp_seq=2 ttl=64 time=0.068 ms
+64 bytes from exercice04-ping-a.exercice04-net (172.18.0.2): icmp_seq=3 ttl=64 time=0.062 ms
+
+--- exercice04-ping-a ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss
