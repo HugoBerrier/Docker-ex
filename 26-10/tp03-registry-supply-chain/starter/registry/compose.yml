@@ -1,0 +1,53 @@
+# Registre privé Shop SAS : TLS, htpasswd, persistance, suppression, UI, mirror Hub.
+services:
+  registry:
+    image: registry:2
+    container_name: shop-registry
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      REGISTRY_AUTH_HTPASSWD_REALM: Shop SAS registry
+    volumes:
+      - registry-data:/var/lib/registry
+      - ./config.yml:/etc/docker/registry/config.yml:ro
+      - ./certs:/certs:ro
+      - ./auth:/auth:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -S -O /dev/null --no-check-certificate https://127.0.0.1:5000/v2/ 2>&1 | grep -q ' 401 '"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  ui:
+    image: joxit/docker-registry-ui:2.5.7
+    container_name: shop-registry-ui
+    restart: unless-stopped
+    depends_on:
+      registry:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment:
+      SINGLE_REGISTRY: "true"
+      REGISTRY_TITLE: Shop SAS
+      DELETE_IMAGES: "true"
+      SHOW_CONTENT_DIGEST: "true"
+      REGISTRY_SECURED: "true"
+      NGINX_PROXY_PASS_URL: https://registry:5000
+      NGINX_PROXY_HEADER_Host: registry.local:5000
+
+  mirror:
+    image: registry:2
+    container_name: shop-registry-mirror
+    restart: unless-stopped
+    ports:
+      - "5001:5000"
+    volumes:
+      - mirror-data:/var/lib/registry
+      - ./config-mirror.yml:/etc/docker/registry/config.yml:ro
+
+volumes:
+  registry-data:
+  mirror-data:

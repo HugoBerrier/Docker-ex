@@ -1,0 +1,4 @@
+cosign.key
+sbom.json
+starter/registry/certs/
+starter/registry/compose.override.yml

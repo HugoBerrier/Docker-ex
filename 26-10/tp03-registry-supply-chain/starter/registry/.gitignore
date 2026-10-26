@@ -1,0 +1,5 @@
+certs/*.key
+certs/*.csr
+certs/*.srl
+certs/san.cnf
+compose.override.yml
