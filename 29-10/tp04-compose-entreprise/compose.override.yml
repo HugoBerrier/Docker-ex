@@ -1,0 +1,32 @@
+# Appliqué automatiquement par `docker compose` (pas par `-f compose.prod.yml`).
+services:
+  api:
+    command: ["node", "--watch", "src/server.js"]
+    environment:
+      LOG_LEVEL: debug
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/shopapi/src:/app/src
+
+  worker:
+    environment:
+      LOG_LEVEL: debug
+
+  db:
+    ports:
+      - "5432:5432"
+
+  traefik:
+    command:
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=shop-front
+      - --entrypoints.web.address=:80
+      - --ping=true
+      - --accesslog=true
+      - --accesslog.format=json
+    ports:
+      - "8080:8080"
