@@ -1,0 +1,48 @@
+==== TENTATIVE TAG 16 SUR VOLUME PG14 ====
+
+PostgreSQL Database directory appears to contain a database; Skipping initialization
+
+2026-10-29 11:10:00.121 UTC [1] FATAL:  database files are incompatible with server
+2026-10-29 11:10:00.121 UTC [1] DETAIL:  The data directory was initialized by PostgreSQL version 14, which is not compatible with this version 16.4.
+==== UPGRADE SCRIPT ====
+==> 1. démarrage PG14
+ Container shopdata-db-1 Running 
+checksum avant : 100000|4be42281faf0c0e116776b41df822db6
+==> 2. dumps (pg_dumpall + pg_dump -Fc)
+==> 3. arrêt PG14 (volume shopdata_pgdata conservé)
+ Container shopdata-db-1 Stopping 
+ Container shopdata-db-1 Stopped 
+Going to remove shopdata-db-1
+ Container shopdata-db-1 Removing 
+ Container shopdata-db-1 Removed 
+==> 4. PG16 sur nouveau volume shopdata_pgdata16
+==> 5. pg_restore du dump -Fc
+checksum après restore : 100000|4be42281faf0c0e116776b41df822db6
+ Container shopdata-db-1 Creating 
+ Container shopdata-db-1 Created 
+ Container shopdata-db-1 Starting 
+ Container shopdata-db-1 Started 
+
+======== VERDICT ========
+avant : 100000|4be42281faf0c0e116776b41df822db6
+après : 100000|4be42281faf0c0e116776b41df822db6
+OK montée de version 14 → 16, checksums identiques
+
+Retour arrière :
+  1. docker compose -f starter/compose.pg16.yml down
+  2. docker compose -f starter/compose.yml up -d   # volume shopdata_pgdata toujours là
+  (ne pas docker volume rm shopdata_pgdata)
+
+Différence pg_dumpall / pg_dump :
+  - pg_dumpall : roles, tablespaces + toutes les bases (cluster entier)
+  - pg_dump    : une seule base (ici shop), formats custom -Fc / directory
+
+Pourquoi un nouveau volume :
+  - PG16 refuse de démarrer sur des fichiers PGDATA écrits par une majeure
+    précédente (erreur « database files are incompatible with server »)
+  - garder l'ancien volume = retour arrière immédiat sans re-restore
+
+Réduire l'indisponibilité :
+  - réplication logique 14→16, bascule quand le lag est nul
+  - pg_upgrade --link dans tianon/postgres-upgrade:14-to-16 (hard links, quasi instantané
+    si même filesystem ; plus risqué, nécessite arrêt court)

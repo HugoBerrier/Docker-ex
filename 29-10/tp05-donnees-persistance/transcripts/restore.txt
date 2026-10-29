@@ -1,0 +1,24 @@
+CHECKSUM_BEFORE=100000|4be42281faf0c0e116776b41df822db6
+==> dump logique → backups/logical/shop-20261029T110930Z.dump
+==> dump brut du volume shopdata_pgdata → backups/raw/pgdata-20261029T110930Z.tar.gz
+==> rétention : conserve les 7 derniers dumps de chaque type
+OK logical=./backups/logical/shop-20261029T110930Z.dump
+OK raw=./backups/raw/pgdata-20261029T110930Z.tar.gz
+20261029T110930Z
+==> restauration de ./backups/logical/shop-20261029T110930Z.dump
+==> checksum après restauration
+100000|4be42281faf0c0e116776b41df822db6
+OK restore
+CHECKSUM_AFTER=100000|4be42281faf0c0e116776b41df822db6
+RESTORE_OK
+backups/logical:
+total 3120
+drwxr-xr-x@ 3 HugoBERRIER  staff       96 Oct 29 12:09 .
+drwxr-xr-x@ 4 HugoBERRIER  staff      128 Oct 29 12:09 ..
+-rw-r--r--@ 1 HugoBERRIER  staff  1594216 Oct 29 12:09 shop-20261029T110930Z.dump
+
+backups/raw:
+total 27368
+drwxr-xr-x@ 3 HugoBERRIER  staff        96 Oct 29 12:09 .
+drwxr-xr-x@ 4 HugoBERRIER  staff       128 Oct 29 12:09 ..
+-rw-r--r--  1 HugoBERRIER  staff  13150022 Oct 29 12:09 pgdata-20261029T110930Z.tar.gz

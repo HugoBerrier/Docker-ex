@@ -1,0 +1,9 @@
+CREATE TABLE
+CREATE TABLE
+INSERT 0 500
+INSERT 0 100000
+ orders |             checksum             
+--------+----------------------------------
+ 100000 | 4be42281faf0c0e116776b41df822db6
+(1 row)
+

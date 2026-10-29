@@ -1,0 +1,11 @@
+==== sidecar OK ====
+/Users/HugoBERRIER/Downloads/docker_ynov_10_26-main-3/29-10/tp04-compose-entreprise/backups/scheduled/last/shop-20261029-111924.sql.gz
+/Users/HugoBERRIER/Downloads/docker_ynov_10_26-main-3/29-10/tp04-compose-entreprise/backups/scheduled/last/shop-20261029-111824.sql.gz
+/Users/HugoBERRIER/Downloads/docker_ynov_10_26-main-3/29-10/tp04-compose-entreprise/backups/scheduled/last/shop-20261029-111724.sql.gz
+/Users/HugoBERRIER/Downloads/docker_ynov_10_26-main-3/29-10/tp04-compose-entreprise/backups/scheduled/daily/shop-20261029.sql.gz
+/Users/HugoBERRIER/Downloads/docker_ynov_10_26-main-3/29-10/tp04-compose-entreprise/backups/scheduled/monthly/shop-202610.sql.gz
+/Users/HugoBERRIER/Downloads/docker_ynov_10_26-main-3/29-10/tp04-compose-entreprise/backups/scheduled/weekly/shop-202644.sql.gz
+2026/10/29 11:16:24 new cron: @every 1m
+2026/10/29 11:17:24 22: SQL backup created successfully
+2026/10/29 11:18:24 59: SQL backup created successfully
+2026/10/29 11:19:24 96: SQL backup created successfully

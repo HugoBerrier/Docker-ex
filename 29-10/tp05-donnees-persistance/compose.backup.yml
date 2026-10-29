@@ -1,0 +1,33 @@
+# Sidecar pour la stack TP04. À lancer depuis le dossier tp04 :
+#   cd ../tp04-compose-entreprise
+#   docker compose -f compose.yml -f compose.backup.yml up -d pgbackups
+# (une copie identique est aussi dans le TP04)
+#
+# Ou depuis ce dossier :
+#   docker compose -f ../tp04-compose-entreprise/compose.yml \
+#     -f ../tp04-compose-entreprise/compose.backup.yml up -d pgbackups
+#
+# Les dumps atterrissent dans tp04-compose-entreprise/backups/scheduled/
+# (chemins relatifs au projet Compose).
+services:
+  pgbackups:
+    image: prodrigestivill/postgres-backup-local:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: shop
+      POSTGRES_USER: shop
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      SCHEDULE: "@every 1m"
+      BACKUP_KEEP_MINUTES: 180
+      BACKUP_KEEP_DAYS: 7
+      HEALTHCHECK_PORT: "8080"
+    secrets:
+      - db_password
+    volumes:
+      - ../tp04-compose-entreprise/backups/scheduled:/backups
+    networks:
+      - back
+    depends_on:
+      db:
+        condition: service_healthy

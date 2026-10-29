@@ -1,0 +1,20 @@
+# Généré par upgrade-pg.sh — PG16 sur volume dédié. Le volume PG14 (shopdata_pgdata) est intact.
+name: shopdata
+services:
+  db:
+    image: postgres:16.4-alpine
+    environment:
+      POSTGRES_USER: shop
+      POSTGRES_PASSWORD: shop
+      POSTGRES_DB: shop
+    volumes:
+      - pgdata16:/var/lib/postgresql/data
+    ports: ["5433:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shop"]
+      interval: 5s
+      retries: 10
+volumes:
+  pgdata16:
+    external: true
+    name: shopdata_pgdata16

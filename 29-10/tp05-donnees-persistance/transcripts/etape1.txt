@@ -1,0 +1,134 @@
+======== ETAPE 1 — preuves ========
+---- A. TP04 : mounts + volume (stack shop) ----
+ Container shop-redis-1 Creating 
+ Container shop-db-1 Creating 
+ Container shop-redis-1 Created 
+ Container shop-db-1 Created 
+ Container shop-db-1 Starting 
+ Container shop-redis-1 Starting 
+ Container shop-db-1 Started 
+ Container shop-redis-1 Started 
+ Container shop-redis-1 Waiting 
+ Container shop-db-1 Waiting 
+ Container shop-db-1 Healthy 
+ Container shop-redis-1 Healthy 
+==== inspect mounts ====
+[
+  {
+    "Type": "bind",
+    "Source": "/host_mnt/Users/HugoBERRIER/Downloads/docker_ynov_10_26-main-3/29-10/tp04-compose-entreprise/db/init.sql",
+    "Destination": "/docker-entrypoint-initdb.d/01-init.sql",
+    "Mode": "ro",
+    "RW": false,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "bind",
+    "Source": "/Users/HugoBERRIER/Downloads/docker_ynov_10_26-main-3/29-10/tp04-compose-entreprise/secrets/db_password.txt",
+    "Destination": "/run/secrets/db_password",
+    "Mode": "",
+    "RW": false,
+    "Propagation": "rprivate"
+  },
+  {
+    "Type": "volume",
+    "Name": "shop_pgdata",
+    "Source": "/var/lib/docker/volumes/shop_pgdata/_data",
+    "Destination": "/var/lib/postgresql/data",
+    "Driver": "local",
+    "Mode": "rw",
+    "RW": true,
+    "Propagation": ""
+  }
+]
+==== volume inspect ====
+{
+  "Name": "shop_pgdata",
+  "Driver": "local",
+  "Mountpoint": "/var/lib/docker/volumes/shop_pgdata/_data",
+  "CreatedAt": "2026-10-29T10:24:12Z"
+}
+==== system df -v (extrait) ====
+Images space usage:
+
+REPOSITORY                              TAG               IMAGE ID       CREATED          SIZE      SHARED SIZE   UNIQUE SIZE   CONTAINERS
+127.0.0.1:5500/shop-worker              1.4.2             0a77fee7d828   46 minutes ago   218MB     2B            218MB         0
+redis                                   7.4-alpine        8da19c7399dc   2 days ago       57.8MB    32B           57.79MB       1
+<none>                                  <none>            4bcdec5591b5   2 days ago       12.1MB    12.1MB        11.87kB       0
+127.0.0.1:5500/shopapi                  1.4.3             b97c1741ee05   2 days ago       184MB     175.2MB       8.676MB       0
+127.0.0.1:5500/shopapi                  build-4           2adcbb5afd9e   2 days ago       12.1MB    12.1MB        11.87kB       0
+127.0.0.1:5500/shopapi                  build-3           9d1692668b41   2 days ago       12.1MB    12.1MB        11.87kB       0
+127.0.0.1:5500/shopapi                  build-2           f41cf4a5f96a   2 days ago       12.1MB    12.1MB        11.87kB       0
+127.0.0.1:5500/shopapi                  build-1           46507405675c   2 days ago       12.1MB    12.1MB        11.87kB       0
+worker                                  1.0               a78b968d98bc   2 days ago       218MB     217.9MB       2.682kB       0
+localhost:5000/shop-worker              1.0               ea2cc182c58a   2 days ago       218MB     217.9MB       2.704kB       0
+shop-worker                             test              d76814137799   2 days ago       271MB     185.3MB       85.66MB       0
+127.0.0.1:5500/shopapi                  1.4.2             063fecf5ac87   2 days ago       175MB     175.2MB       8.823kB       0
+127.0.0.1:5500/demo                     one               caa713181d19   2 days ago       175MB     175.2MB       8.725kB       0
+shopapi                                 test              57cb2e15695f   2 days ago       232MB     193.2MB       38.61MB       0
+shopapi                                 legacy            e633c79830bb   2 days ago       1.09GB    2B            1.094GB       0
+quay.io/skopeo/stable                   latest            e1fcbe25df70   3 days ago       337MB     0B            337.3MB       0
+exercice09-logs-api                     latest            f7416c364b12   2 weeks ago      355MB     264.8MB       90.4MB        1
+exercice09-crud-api                     latest            2629f159e8cf   2 weeks ago      355MB     264.8MB       90.14MB       1
+exercice08-dogs-api                     latest            61dbbeea1ea7   2 weeks ago      355MB     264.8MB       90.14MB       1
+exercice07-kennel-mysql                 latest            61a04cf1564c   2 weeks ago      1.09GB    1.086GB       25.23kB       1
+ubuntu-ping                             latest            cb711644a994   2 weeks ago      237MB     158MB         78.84MB       2
+exercice03-nginx                        latest            c7f885e7b948   2 weeks ago      93.6MB    93.53MB       41.83kB       1
+ubuntu-nginx                            latest            148d653c34bf   2 weeks ago      237MB     158MB         79.36MB       0
+moby/buildkit                           buildx-stable-1   cec9f139f45e   4 weeks ago      365MB     2B            364.9MB       1
+ubuntu                                  latest            f144425ff09b   4 weeks ago      162MB     158MB         3.754MB       2
+adminer                                 latest            74f29c416e14   4 weeks ago      164MB     12.93MB       151.3MB       1
+nginx                                   alpine            df221db836e1   5 weeks ago      94.4MB    93.53MB       906.9kB       1
+alpine                                  latest            294b683cb724   5 weeks ago      13MB      12.93MB       88.02kB       0
+hadolint/hadolint                       latest            32dac94127fd   3 months ago     67.9MB    0B            67.88MB       0
+mysql                                   8.0               7dcddc01f13b   5 months ago     1.1GB     1.086GB       15.48MB       3
+127.0.0.1:5001/library/alpine           3.20              d9e853e87e55   6 months ago     12.2MB    12.1MB        81.46kB       0
+node                                    20-alpine         fb4cd12c85ee   6 months ago     194MB     193.2MB       408.5kB       0
+traefik                                 v3.6.1            fd5932c796f7   11 months ago    240MB     0B            240.4MB       0
+prodrigestivill/postgres-backup-local   15                57781a84f59f   13 months ago    649MB     0B            649.4MB       0
+wagoodman/dive                          latest            f1886e6c32c0   19 months ago    87.1MB    0B            87.12MB       0
+aquasec/trivy                           0.58.1            ab70a0220059   22 months ago    204MB     12.08MB       192.2MB       0
+anchore/syft                            v1.18.1           b8c170b8e51b   22 months ago    62MB      0B            62.01MB       0
+==== writable layer vs volume ====
+docker diff (A=/tmp/x couche writable ; volume souvent invisible au diff) :
+C /run
+A /run/secrets
+A /run/secrets/db_password
+C /run/postgresql
+A /run/postgresql/.s.PGSQL.5432
+A /run/postgresql/.s.PGSQL.5432.lock
+C /docker-entrypoint-initdb.d
+A /docker-entrypoint-initdb.d/01-init.sql
+C /tmp
+A /tmp/x
+fichier dans le volume :
+-rw-r--r--    1 root     root             0 Oct 29 11:10 /var/lib/postgresql/data/preuve-volume.txt
+==== B. tests down / down -v / rm / prune sur COPIE shopdata-demo ====
+CREATE TABLE
+INSERT 0 1
+volumes avant down: shopdatademo_pgdata
+après down (sans -v): shopdatademo_pgdata
+données après down+up: 42
+après down -v: ABSENT
+CREATE TABLE
+INSERT 0 1
+Going to remove shopdatademo-db-1
+après compose rm: volume=shopdatademo_pgdata
+données après rm+up: 7
+volume prune (filtre projet) :
+0f0539c37b242af95737ee63e077f6aa18a217a21b9bdd2831b53132219f6003
+01_base_keycloak_keycloak_data
+47a6b17c10a0bac2c64201d786db0d3e64bef5a316952419c2cea2747dae6d57
+1878a90219b54c9db60f10e44b61666b6c24e9783da05e8a2c77d31ecc49b134
+562196734d9990f9582a6eab9d9af177a3f41b95ea148086e7ffe96c153e6114
+shopdatademo_pgdata
+volume prune n'enlève que les volumes dangling (aucun conteneur ne les référence).
+==== C. volume anonyme ====
+volume anonyme: 39ade43a0d2737462ed78840410261fe60f774ca80ce035e74968507ee83f491
+après docker rm (sans -v): volume encore là? OUI
+après docker rm -v: volume 1a347a3d98a6041e36e6b8d1f1c838f6b6d791c3771277ff57f2c26a6019c3f6 encore? NON
+39ade43a0d2737462ed78840410261fe60f774ca80ce035e74968507ee83f491
+==== D. init.sql non rejoué ====
+01-init.sql
+PGDATA_EXISTS
+L entrypoint Postgres ne lance initdb.d que si PGDATA est vide.

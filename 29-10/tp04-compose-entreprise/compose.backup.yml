@@ -1,0 +1,25 @@
+# Sidecar de sauvegarde planifiée (TP05).
+# Usage : docker compose -f compose.yml -f compose.backup.yml up -d pgbackups
+# SCHEDULE @every 1m pour le test ; en prod préférer @daily.
+services:
+  pgbackups:
+    image: prodrigestivill/postgres-backup-local:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: shop
+      POSTGRES_USER: shop
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      SCHEDULE: "@every 1m"
+      BACKUP_KEEP_MINUTES: 180
+      BACKUP_KEEP_DAYS: 7
+      HEALTHCHECK_PORT: "8080"
+    secrets:
+      - db_password
+    volumes:
+      - ./backups/scheduled:/backups
+    networks:
+      - back
+    depends_on:
+      db:
+        condition: service_healthy
