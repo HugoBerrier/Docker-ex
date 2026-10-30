@@ -1,0 +1,50 @@
+url=http://127.0.0.1/health
+host=api.localhost
+duration_s=40.0
+concurrency=20
+ok=2621
+fail=1167
+total=3788
+req_per_s=94.7
+error_samples:
+1793365459.627 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.627 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.628 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.628 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.629 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.629 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.630 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.630 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.631 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.631 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.632 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.632 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.633 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.634 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.634 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.634 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.635 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.635 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.635 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.638 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.639 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.640 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.640 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.640 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.727 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.728 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.728 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.729 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.729 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.735 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.770 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.778 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.778 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.793 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.793 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.795 HTTPError: HTTP Error 502: Bad Gateway
+1793365459.828 HTTPError: HTTP Error 502: Bad Gateway
+1793365460.878 HTTPError: HTTP Error 502: Bad Gateway
+1793365460.879 HTTPError: HTTP Error 502: Bad Gateway
+1793365460.879 HTTPError: HTTP Error 502: Bad Gateway
+...

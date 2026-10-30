@@ -1,0 +1,13 @@
+== mesure downtime : http://127.0.0.1/health Host=api.localhost pendant 8s (~100 req/s) ==
+log: /Users/HugoBERRIER/Downloads/docker_ynov_10_26-main-4/30-10/tp09-cicd-deploiement/shop/transcripts/downtime-20261030-142023.txt
+url=http://127.0.0.1/health
+host=api.localhost
+duration_s=8.0
+concurrency=20
+ok=831
+fail=0
+total=831
+req_per_s=103.9
+error_samples:
+
+FAIL_COUNT=0

@@ -1,0 +1,51 @@
+== mesure downtime : http://127.0.0.1/health Host=api.localhost pendant 90s (~100 req/s) ==
+log: /Users/HugoBERRIER/Downloads/docker_ynov_10_26-main-4/30-10/tp09-cicd-deploiement/shop/transcripts/downtime-20261030-142218.txt
+url=http://127.0.0.1/health
+host=api.localhost
+duration_s=90.0
+concurrency=20
+ok=8625
+fail=39
+total=8664
+req_per_s=96.3
+error_samples:
+1793366570.545 timeout: timed out
+1793366570.613 timeout: timed out
+1793366570.632 timeout: timed out
+1793366570.695 timeout: timed out
+1793366570.701 timeout: timed out
+1793366570.718 timeout: timed out
+1793366570.798 timeout: timed out
+1793366570.903 timeout: timed out
+1793366570.919 timeout: timed out
+1793366570.980 timeout: timed out
+1793366571.044 timeout: timed out
+1793366571.101 timeout: timed out
+1793366571.141 timeout: timed out
+1793366571.271 timeout: timed out
+1793366571.418 timeout: timed out
+1793366571.617 timeout: timed out
+1793366571.628 timeout: timed out
+1793366571.995 timeout: timed out
+1793366572.009 timeout: timed out
+1793366576.452 timeout: timed out
+1793366576.491 timeout: timed out
+1793366576.530 timeout: timed out
+1793366576.533 timeout: timed out
+1793366576.618 timeout: timed out
+1793366576.621 timeout: timed out
+1793366576.632 timeout: timed out
+1793366576.632 timeout: timed out
+1793366576.710 timeout: timed out
+1793366576.803 timeout: timed out
+1793366576.811 timeout: timed out
+1793366576.820 timeout: timed out
+1793366576.917 timeout: timed out
+1793366576.987 timeout: timed out
+1793366577.006 timeout: timed out
+1793366577.195 timeout: timed out
+1793366577.274 timeout: timed out
+1793366577.275 timeout: timed out
+1793366577.832 timeout: timed out
+1793366578.020 timeout: timed out
+FAIL_COUNT=39

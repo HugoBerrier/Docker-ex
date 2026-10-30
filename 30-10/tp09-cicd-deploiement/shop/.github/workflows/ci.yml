@@ -1,0 +1,184 @@
+# Pipeline Shop SAS — PR → main → tag v*
+# Tags : politique TP03 (sha-<sha>, semver sur tag, jamais latest).
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write   # cosign keyless (OIDC)
+  deployments: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_OWNER: ${{ github.repository_owner }}
+
+jobs:
+  lint-and-build:
+    name: lint + build (${{ matrix.app }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app: api
+            context: apps/shopapi
+            image: shopapi
+          - app: worker
+            context: apps/shop-worker
+            image: shop-worker
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ${{ matrix.context }}/Dockerfile
+          failure-threshold: warning
+
+      - name: docker compose config
+        if: matrix.app == 'api'
+        run: docker compose -f compose.yml -f compose.prod.yml config >/dev/null
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker metadata (tags + labels OCI)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ env.IMAGE_OWNER }}/${{ matrix.image }}
+          tags: |
+            type=sha,prefix=sha-,format=short
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=sha-${{ github.sha }},enable=${{ github.ref == 'refs/heads/main' }}
+          labels: |
+            org.opencontainers.image.title=${{ matrix.image }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+
+      - name: Build étape test
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          target: test
+          push: false
+          cache-from: type=gha,scope=${{ matrix.app }}-test
+          cache-to: type=gha,mode=max,scope=${{ matrix.app }}-test
+          secret-files: ${{ matrix.app == 'worker' && 'pipconf=./secrets/pip.conf.ci' || '' }}
+
+      - name: Build image (multi-arch)
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          provenance: true
+          sbom: true
+          cache-from: type=gha,scope=${{ matrix.app }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.app }}
+          build-args: |
+            APP_VERSION=${{ github.ref_type == 'tag' && github.ref_name || 'dev' }}
+            GIT_SHA=${{ github.sha }}
+          secret-files: ${{ matrix.app == 'worker' && 'pipconf=./secrets/pip.conf.ci' || '' }}
+
+      - name: Trivy (bloquant HIGH/CRITICAL)
+        if: github.event_name != 'pull_request'
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ghcr.io/${{ env.IMAGE_OWNER }}/${{ matrix.image }}:sha-${{ github.sha }}
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+          format: table
+
+      - name: Cosign keyless (OIDC)
+        if: github.event_name != 'pull_request'
+        env:
+          COSIGN_YES: "true"
+        run: |
+          curl -sSfL https://github.com/sigstore/cosign/releases/download/v2.4.1/cosign-linux-amd64 -o /tmp/cosign
+          chmod +x /tmp/cosign
+          IMG="ghcr.io/${IMAGE_OWNER}/${{ matrix.image }}:sha-${GITHUB_SHA}"
+          /tmp/cosign sign --yes "$IMG"
+
+  deploy-preprod:
+    name: deploy preprod
+    needs: lint-and-build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: preprod
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup docker context (SSH)
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          PREPROD_HOST: ${{ secrets.PREPROD_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf 'Host preprod\n  HostName %s\n  User deploy\n  IdentityFile ~/.ssh/deploy_key\n  StrictHostKeyChecking accept-new\n' "$PREPROD_HOST" > ~/.ssh/config
+          docker context create preprod --docker "host=ssh://deploy@preprod"
+      - name: Rolling deploy
+        env:
+          VERSION: sha-${{ github.sha }}
+          REGISTRY: ghcr.io/${{ github.repository_owner }}
+          DOCKER_CONTEXT: preprod
+        run: |
+          ./deploy/rolling-update.sh
+
+  deploy-prod:
+    name: deploy prod (manual approval)
+    needs: lint-and-build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify cosign signature
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/shopapi:${{ github.ref_name }}
+        run: |
+          curl -sSfL https://github.com/sigstore/cosign/releases/download/v2.4.1/cosign-linux-amd64 -o /tmp/cosign
+          chmod +x /tmp/cosign
+          /tmp/cosign verify \
+            --certificate-identity-regexp "https://github.com/${{ github.repository }}/.*" \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            "$IMAGE"
+      - name: Setup docker context (SSH)
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          PROD_HOST: ${{ secrets.PROD_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf 'Host prod\n  HostName %s\n  User deploy\n  IdentityFile ~/.ssh/deploy_key\n  StrictHostKeyChecking accept-new\n' "$PROD_HOST" > ~/.ssh/config
+          docker context create prod --docker "host=ssh://deploy@prod"
+      - name: Rolling deploy
+        env:
+          VERSION: ${{ github.ref_name }}
+          REGISTRY: ghcr.io/${{ github.repository_owner }}
+          DOCKER_CONTEXT: prod
+        run: |
+          ./deploy/rolling-update.sh

@@ -1,0 +1,40 @@
+== rolling update api → local/shopapi:sha-old (replicas=2) ==
+compose: -f /Users/HugoBERRIER/Downloads/docker_ynov_10_26-main-3/29-10/tp04-compose-entreprise/compose.yml -f /Users/HugoBERRIER/Downloads/docker_ynov_10_26-main-4/30-10/tp08-hardening/compose.hardened.yml
+ Container shop-api-15 Running 
+ Container shop-api-16 Running 
+  healthy=2/2
+réplicas à remplacer: 2
+-- scale start-first → 4 --
+ Container shop-api-15 Running 
+ Container shop-api-16 Running 
+ Container shop-api-18 Creating 
+ Container shop-api-17 Creating 
+ Container shop-api-18 Created 
+ Container shop-api-17 Created 
+ Container shop-api-18 Starting 
+ Container shop-api-18 Started 
+ Container shop-api-17 Starting 
+ Container shop-api-17 Started 
+  healthy=2/4
+  healthy=2/4
+  healthy=3/4
+  healthy=4/4
+-- retrait shop-api-15 (8c7ae643c158) --
+  drain shop-api-15 (touch /tmp/drain, wait 5s, disconnect shop-front)
+8c7ae643c158cd541aa46b29a1c09e357600f8007d15e6bd9e427f5bd423f9dd
+  healthy=3/2
+  ok après retrait de shop-api-15
+-- retrait shop-api-16 (28db5b6adb5e) --
+  drain shop-api-16 (touch /tmp/drain, wait 5s, disconnect shop-front)
+28db5b6adb5e061f279ccc40fe8d161d80103a4b5ee21c2c435a0b720f0ff1a3
+  healthy=2/2
+  ok après retrait de shop-api-16
+ Container shop-api-17 Running 
+ Container shop-api-18 Running 
+  healthy=2/2
+ Container shop-worker-1 Running 
+== rolling update terminé : shopapi:sha-old ==
+NAME          IMAGE           COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+shop-api-17   shopapi:local   "/bin/sh /with-datab…"   api       29 seconds ago   Up 27 seconds (healthy)   3000/tcp
+shop-api-18   shopapi:local   "/bin/sh /with-datab…"   api       29 seconds ago   Up 28 seconds (healthy)   3000/tcp
+rollback_seconds=30

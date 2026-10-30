@@ -1,0 +1,12 @@
+.env
+secrets/db_password.txt
+secrets/pip.conf
+sbom.json
+*.key
+*.pub
+node_modules/
+__pycache__/
+.pytest_cache/
+backups/
+transcripts/*.log
+.DS_Store
