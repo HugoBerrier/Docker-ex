@@ -1,0 +1,33 @@
+======== EXPERIENCES ========
+---- read-only ----
+touch: /x: Read-only file system
+tmp_ok
+---- cap-drop ALL ----
+--- 1.1.1.1 ping statistics ---
+1 packets transmitted, 1 packets received, 0% packet loss
+round-trip min/avg/max = 18.698/18.698/18.698 ms
+--- 1.1.1.1 ping statistics ---
+1 packets transmitted, 1 packets received, 0% packet loss
+round-trip min/avg/max = 18.734/18.734/18.734 ms
+chown: /tmp: Operation not permitted
+chown_ok
+(9/10) Installing libcurl (8.14.1-r2)
+(10/10) Installing curl (8.14.1-r2)
+Executing busybox-1.36.1-r31.trigger
+Executing ca-certificates-20261020-r0.trigger
+OK: 13 MiB in 24 packages
+---- no-new-privileges ----
+-rwxr-xr-x    1 root     root        808712 Nov 23  2025 /bin/busybox
+lrwxrwxrwx    1 root     root            12 Apr 15  2026 /usr/bin/passwd -> /bin/busybox
+passwd: unrecognized option: h
+BusyBox v1.36.1 (2025-11-23 14:32:18 UTC) multi-call binary.
+---- pids-limit 50 ----
+sh: can't fork: Resource temporarily unavailable
+---- memory 32m ----
+ead6e3c3bce099c2ccf09442464cbf98d1fb27b327c4d5352c20c6a97e271803
+OOMKilled=true Status=running
+---- user 1000 ----
+uid=1000 gid=0(root) groups=0(root)
+---- seccomp ----
+unshare: unshare(0x10000000): Operation not permitted
+Profil défaut Docker ~ ~50 syscalls bloqués (doc Docker); unshare (clone user ns) est parmi eux.

@@ -1,0 +1,3 @@
+ready ok
+cache HIT ok
+commande confirmed

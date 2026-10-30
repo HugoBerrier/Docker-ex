@@ -1,0 +1,100 @@
+ Image tecnativa/docker-socket-proxy:0.3.0 Pulling 
+ d74424668f50 Pulling fs layer 0B
+ 31d2365ee063 Pulling fs layer 0B
+ 76fbfe938387 Pulling fs layer 0B
+ 8becb47ce994 Pulling fs layer 0B
+ d1f401b152e3 Pulling fs layer 0B
+ e8796492d18b Pulling fs layer 0B
+ a88dc8b54e91 Pulling fs layer 0B
+ 799534b944a4 Pulling fs layer 0B
+ 31d2365ee063 Downloading 1.049MB
+ 31d2365ee063 Downloading 4.194MB
+ 31d2365ee063 Downloading 5.243MB
+ 31d2365ee063 Download complete 0B
+ 799534b944a4 Download complete 0B
+ a88dc8b54e91 Downloading 2.808MB
+ a88dc8b54e91 Download complete 0B
+ a88dc8b54e91 Extracting 1B
+ a88dc8b54e91 Extracting 1B
+ 76fbfe938387 Download complete 0B
+ 8becb47ce994 Download complete 0B
+ d1f401b152e3 Download complete 0B
+ e8796492d18b Download complete 0B
+ a88dc8b54e91 Extracting 1B
+ d74424668f50 Download complete 0B
+ a88dc8b54e91 Extracting 1B
+ a88dc8b54e91 Extracting 1B
+ a88dc8b54e91 Extracting 1B
+ a88dc8b54e91 Extracting 1B
+ a88dc8b54e91 Extracting 1B
+ a88dc8b54e91 Extracting 1B
+ a88dc8b54e91 Extracting 2B
+ a88dc8b54e91 Pull complete 0B
+ d1f401b152e3 Extracting 1B
+ d1f401b152e3 Pull complete 0B
+ 31d2365ee063 Extracting 1B
+ 799534b944a4 Pull complete 0B
+ 5d635b1e24e8 Download complete 0B
+ 31d2365ee063 Extracting 1B
+ 31d2365ee063 Pull complete 0B
+ 76fbfe938387 Pull complete 0B
+ 8becb47ce994 Pull complete 0B
+ e8796492d18b Pull complete 0B
+ 31d2365ee063 Pull complete 0B
+ 76fbfe938387 Pull complete 0B
+ 8becb47ce994 Pull complete 0B
+ e8796492d18b Pull complete 0B
+ d74424668f50 Pull complete 0B
+ Image tecnativa/docker-socket-proxy:0.3.0 Pulled 
+ Container shop-pgbackups-1 Stopping 
+ Network shop-socket Creating 
+ Container shop-db-1 Recreate 
+ Container shop-redis-1 Recreate 
+ Network shop-socket Creating 
+ Container shop-pgbackups-1 Stopped 
+ Container shop-pgbackups-1 Removing 
+ Network shop-socket Created 
+ Network shop-socket Created 
+ Container shop-socket-proxy-1 Creating 
+ Container shop-pgbackups-1 Removed 
+ Container shop-socket-proxy-1 Created 
+ Container shop-traefik-1 Recreate 
+ Container shop-redis-1 Recreated 
+ Container shop-db-1 Recreated 
+ Container shop-api-1 Recreate 
+ Container shop-worker-1 Recreate 
+ Container shop-traefik-1 Recreated 
+ Container shop-worker-1 Recreated 
+ Container shop-api-1 Recreated 
+ Container shop-redis-1 Starting 
+ Container shop-socket-proxy-1 Starting 
+ Container shop-db-1 Starting 
+ Container shop-redis-1 Started 
+ Container shop-socket-proxy-1 Started 
+ Container shop-traefik-1 Starting 
+ Container shop-db-1 Started 
+ Container shop-db-1 Waiting 
+ Container shop-redis-1 Waiting 
+ Container shop-db-1 Waiting 
+ Container shop-redis-1 Waiting 
+ Container shop-traefik-1 Started 
+ Container shop-redis-1 Healthy 
+ Container shop-redis-1 Healthy 
+ Container shop-db-1 Healthy 
+ Container shop-api-1 Starting 
+ Container shop-db-1 Healthy 
+ Container shop-worker-1 Starting 
+ Container shop-api-1 Started 
+ Container shop-worker-1 Started 
+ Container shop-traefik-1 Waiting 
+ Container shop-worker-1 Waiting 
+ Container shop-db-1 Waiting 
+ Container shop-redis-1 Waiting 
+ Container shop-api-1 Waiting 
+ Container shop-socket-proxy-1 Waiting 
+ Container shop-redis-1 Healthy 
+ Container shop-db-1 Healthy 
+ Container shop-socket-proxy-1 Healthy 
+ Container shop-api-1 Healthy 
+ Container shop-worker-1 Healthy 
+ Container shop-traefik-1 Healthy 

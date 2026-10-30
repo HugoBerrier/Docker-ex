@@ -1,0 +1,92 @@
+=== audit projet=shop ===
+
+--- shop-api-1 (service=api) ---
+  User(config)=1000  Pid1UID=1000
+  Privileged=false
+  CapAdd=null
+  CapDrop=null
+  ReadonlyRootfs=false
+  Memory=unlimited  PidsLimit=unlimited
+  no-new-privileges=no
+  docker.sock=no
+  ECART: rootfs non read-only
+  ECART: pas de limite mémoire
+  ECART: pas de PidsLimit
+  ECART: no-new-privileges absent
+  ECART: CapDrop ne contient pas ALL
+
+--- shop-worker-1 (service=worker) ---
+  User(config)=1000  Pid1UID=1000
+  Privileged=false
+  CapAdd=null
+  CapDrop=null
+  ReadonlyRootfs=false
+  Memory=unlimited  PidsLimit=unlimited
+  no-new-privileges=no
+  docker.sock=no
+  ECART: rootfs non read-only
+  ECART: pas de limite mémoire
+  ECART: pas de PidsLimit
+  ECART: no-new-privileges absent
+  ECART: CapDrop ne contient pas ALL
+
+--- shop-db-1 (service=db) ---
+  User(config)=(image default / root)  Pid1UID=0
+  Privileged=false
+  CapAdd=null
+  CapDrop=null
+  ReadonlyRootfs=false
+  Memory=unlimited  PidsLimit=unlimited
+  no-new-privileges=no
+  docker.sock=no
+  ECART: rootfs non read-only
+  ECART: pas de limite mémoire
+  ECART: pas de PidsLimit
+  ECART: no-new-privileges absent
+  ECART: CapDrop ne contient pas ALL
+
+--- shop-traefik-1 (service=traefik) ---
+  User(config)=(image default / root)  Pid1UID=0
+  Privileged=false
+  CapAdd=null
+  CapDrop=null
+  ReadonlyRootfs=false
+  Memory=unlimited  PidsLimit=unlimited
+  no-new-privileges=no
+  docker.sock=yes
+  ECART: socket Docker montée
+  ECART: rootfs non read-only
+  ECART: pas de limite mémoire
+  ECART: pas de PidsLimit
+  ECART: no-new-privileges absent
+  ECART: CapDrop ne contient pas ALL
+  ECART: processus root (uid 0)
+
+--- shop-redis-1 (service=redis) ---
+  User(config)=(image default / root)  Pid1UID=0
+  Privileged=false
+  CapAdd=null
+  CapDrop=null
+  ReadonlyRootfs=false
+  Memory=unlimited  PidsLimit=unlimited
+  no-new-privileges=no
+  docker.sock=no
+  ECART: rootfs non read-only
+  ECART: pas de limite mémoire
+  ECART: pas de PidsLimit
+  ECART: no-new-privileges absent
+  ECART: CapDrop ne contient pas ALL
+  ECART: processus root (uid 0)
+
+--- shop-adminer-1 (service=adminer) ---
+  User(config)=adminer  Pid1UID=999
+  Privileged=false
+  CapAdd=null
+  CapDrop=null
+  ReadonlyRootfs=false
+  Memory=unlimited  PidsLimit=unlimited
+  no-new-privileges=no
+  docker.sock=no
+  (hors périmètre strict)
+
+=== résumé : 6 conteneur(s), 28 écart(s) ===

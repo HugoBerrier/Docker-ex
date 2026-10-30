@@ -1,0 +1,161 @@
+# Surcharge durcie de la stack TP04.
+# Usage (depuis tp04-compose-entreprise) :
+#   docker compose -f compose.yml -f /chemin/vers/compose.hardened.yml up -d --wait
+#
+# Menace réduite par directive (commentaires) :
+# - read_only + tmpfs  : limite l'écriture filesystem (malware / dump)
+# - cap_drop ALL       : retire les capacités Linux inutiles
+# - cap_add minimal    : uniquement ce dont le process a besoin
+# - no-new-privileges  : bloque setuid / élévation via exec
+# - pids_limit         : mitige fork-bomb
+# - mem/cpu limits     : isole le noisy neighbor + OOM contrôlé
+# - socket-proxy       : Traefik n'a plus la socket Docker (équivalent root hôte)
+# - redis user non-root: surface d'attaque réduite si RCE Redis
+
+services:
+  # Proxy RO de la socket : seul CONTAINERS/NETWORKS/EVENTS/PING/VERSION en lecture.
+  # Menace : sans ça, Traefik = root sur l'hôte via le socket.
+  socket-proxy:
+    image: tecnativa/docker-socket-proxy:0.3.0
+    restart: unless-stopped
+    environment:
+      CONTAINERS: 1
+      NETWORKS: 1
+      EVENTS: 1
+      PING: 1
+      VERSION: 1
+      INFO: 1
+      POST: 0
+      BUILD: 0
+      COMMIT: 0
+      EXEC: 0
+      IMAGES: 0
+      VOLUMES: 0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - socket
+    # Pas de read_only ici : l'entrypoint écrit haproxy.cfg (sinon crash-loop).
+    # La menace socket reste bornée (mount :ro + POST=0).
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 100
+    mem_limit: 64m
+    cpus: "0.20"
+  traefik:
+    # Plus de socket hôte : endpoint TCP vers le proxy.
+    # Non-root + NET_BIND_SERVICE pour écouter :80 (équivalent setcap).
+    user: "65532:65532"
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run
+    pids_limit: 200
+    mem_limit: 128m
+    cpus: "0.25"
+    volumes: !reset []
+    environment:
+      DOCKER_API_VERSION: "1.44"
+    command:
+      - --providers.docker=true
+      - --providers.docker.endpoint=tcp://socket-proxy:2375
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=shop-front
+      - --entrypoints.web.address=:80
+      - --ping=true
+      - --accesslog=true
+      - --accesslog.format=json
+    networks:
+      - front
+      - socket
+    depends_on:
+      socket-proxy:
+        condition: service_started
+
+  api:
+    # Image déjà USER 1000. Pas de cap nécessaire.
+    user: "1000:1000"
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: 256m
+    cpus: "0.50"
+
+  worker:
+    user: "1000:1000"
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: 256m
+    cpus: "0.50"
+
+  db:
+    # Postgres entrypoint a besoin de CHOWN/DAC_OVERRIDE/FOWNER/SETUID/SETGID
+    # pour initdb / droits sur PGDATA. Sans ça : permission denied au démarrage.
+    # Pas de NET_RAW / SYS_ADMIN.
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+      - SETGID
+      - SETUID
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 512
+    mem_limit: 512m
+    cpus: "1.0"
+
+  redis:
+    # Utilisateur redis de l'image alpine (uid 999) — volume /data doit être accessible.
+    user: "999:999"
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    mem_limit: 128m
+    cpus: "0.50"
+
+  adminer:
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    mem_limit: 128m
+    cpus: "0.25"
+
+networks:
+  socket:
+    name: shop-socket
+    internal: true

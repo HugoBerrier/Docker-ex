@@ -1,0 +1,64 @@
+=== audit projet=shop ===
+
+--- shop-traefik-1 (service=traefik) ---
+  User(config)=65532:65532  Pid1UID=65532
+  Privileged=false
+  CapAdd=["CAP_NET_BIND_SERVICE"]
+  CapDrop=["ALL"]
+  ReadonlyRootfs=true
+  Memory=134217728  PidsLimit=200
+  no-new-privileges=yes
+  docker.sock=no
+
+--- shop-socket-proxy-1 (service=socket-proxy) ---
+  User(config)=(image default / root)  Pid1UID=0
+  Privileged=false
+  CapAdd=null
+  CapDrop=["ALL"]
+  ReadonlyRootfs=false
+  Memory=67108864  PidsLimit=100
+  no-new-privileges=yes
+  docker.sock=yes
+  (hors périmètre strict)
+
+--- shop-api-1 (service=api) ---
+  User(config)=1000:1000  Pid1UID=1000
+  Privileged=false
+  CapAdd=null
+  CapDrop=["ALL"]
+  ReadonlyRootfs=true
+  Memory=268435456  PidsLimit=256
+  no-new-privileges=yes
+  docker.sock=no
+
+--- shop-worker-1 (service=worker) ---
+  User(config)=1000:1000  Pid1UID=1000
+  Privileged=false
+  CapAdd=null
+  CapDrop=["ALL"]
+  ReadonlyRootfs=true
+  Memory=268435456  PidsLimit=256
+  no-new-privileges=yes
+  docker.sock=no
+
+--- shop-db-1 (service=db) ---
+  User(config)=(image default / root)  Pid1UID=0
+  Privileged=false
+  CapAdd=["CAP_CHOWN","CAP_DAC_OVERRIDE","CAP_FOWNER","CAP_SETGID","CAP_SETUID"]
+  CapDrop=["ALL"]
+  ReadonlyRootfs=true
+  Memory=536870912  PidsLimit=512
+  no-new-privileges=yes
+  docker.sock=no
+
+--- shop-redis-1 (service=redis) ---
+  User(config)=999:999  Pid1UID=999
+  Privileged=false
+  CapAdd=null
+  CapDrop=["ALL"]
+  ReadonlyRootfs=true
+  Memory=134217728  PidsLimit=128
+  no-new-privileges=yes
+  docker.sock=no
+
+=== résumé : 6 conteneur(s), 0 écart(s) ===
