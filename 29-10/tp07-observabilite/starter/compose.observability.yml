@@ -1,0 +1,13 @@
+# Stub d'origine — la stack complète est dans le dossier parent :
+#   cd .. && docker compose -f compose.observability.yml up -d
+#   ./load.sh 1000
+#   open http://localhost:9090/targets  http://localhost:3001
+name: observability
+services:
+  prometheus:
+    image: prom/prometheus:v2.54.1
+  grafana:
+    image: grafana/grafana:11.2.0
+networks:
+  shop_front: { external: true }
+  shop_back: { external: true }

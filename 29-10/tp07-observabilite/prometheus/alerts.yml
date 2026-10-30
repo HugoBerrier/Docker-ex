@@ -1,0 +1,63 @@
+groups:
+  - name: shop
+    rules:
+      - alert: ShopApiDown
+        # absent() : si DNS SD retire la cible, up==0 disparaît aussi.
+        expr: (up{job="shop-api"} == 0) or absent(up{job="shop-api"})
+        for: 15s
+        labels:
+          severity: critical
+        annotations:
+          summary: "API Shop down"
+          description: "Le scrape Prometheus de l'API échoue (cible down ou absente)."
+
+      - alert: ShopApiHigh5xx
+        expr: |
+          (
+            sum(rate(http_request_duration_seconds_count{job="shop-api",status=~"5.."}[5m]))
+            /
+            clamp_min(sum(rate(http_request_duration_seconds_count{job="shop-api"}[5m])), 1e-9)
+          ) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Plus de 5 % de réponses 5xx sur l'API"
+
+      - alert: ShopApiHighLatencyP95
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum(rate(http_request_duration_seconds_bucket{job="shop-api"}[5m])) by (le)
+          ) > 0.5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "p95 latence API > 500 ms"
+
+      - alert: ContainerRestarting
+        expr: |
+          changes(container_start_time_seconds{name=~"shop-.*"}[15m]) > 0
+          or changes(process_start_time_seconds{job=~"shop-api|shop-worker"}[15m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Conteneur / process shop redémarré"
+          description: "Redémarrage détecté ({{ $labels.name }}{{ $labels.job }})."
+
+      - alert: ContainerMemoryNearLimit
+        expr: |
+          (
+            container_memory_working_set_bytes{name=~"shop-.*"}
+            /
+            clamp_min(container_spec_memory_limit_bytes{name=~"shop-.*"}, 1)
+          ) > 0.9
+          and container_spec_memory_limit_bytes{name=~"shop-.*"} > 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Mémoire > 90 % de la limite"
+          description: "{{ $labels.name }} utilise {{ $value | humanizePercentage }} de sa limite."

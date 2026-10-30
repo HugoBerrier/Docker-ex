@@ -1,0 +1,34 @@
+{
+  "alerts": [
+    {
+      "labels": {
+        "alertname": "ShopApiDown",
+        "instance": "172.24.0.3:3000",
+        "job": "shop-api",
+        "severity": "critical"
+      },
+      "annotations": {
+        "description": "Le scrape Prometheus de l'API \u00e9choue (cible down ou absente).",
+        "summary": "API Shop down"
+      },
+      "state": "firing",
+      "activeAt": "2026-10-30T08:31:54.119218918Z",
+      "value": "0e+00"
+    },
+    {
+      "labels": {
+        "alertname": "ContainerRestarting",
+        "instance": "172.24.0.3:3000",
+        "job": "shop-api",
+        "severity": "warning"
+      },
+      "annotations": {
+        "description": "Red\u00e9marrage d\u00e9tect\u00e9 (shop-api).",
+        "summary": "Conteneur / process shop red\u00e9marr\u00e9"
+      },
+      "state": "firing",
+      "activeAt": "2026-10-30T08:28:39.119218918Z",
+      "value": "5e+00"
+    }
+  ]
+}
